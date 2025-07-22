@@ -7,15 +7,20 @@ import (
 	"time"
 )
 
-// Snowflake 分布式ID生成器
-// | 1位符号 | 41位时间戳 | 10位机器ID | 12位序列号 |
-// |   0    |  时间差值  |   机器编号  |   序号    |
-type Snowflake struct {
-	machineID int64
-	lastStamp int64
-	sequence  int64
-	mu        sync.Mutex
-}
+type (
+	// Snowflake 分布式ID生成器
+	// | 1位符号 | 41位时间戳 | 10位机器ID | 12位序列号 |
+	// |   0    |  时间差值  |   机器编号  |   序号    |
+	Snowflake struct {
+		machineID int64
+		lastStamp int64
+		sequence  int64
+		mu        sync.Mutex
+	}
+
+	// ID 唯一标识
+	ID int64
+)
 
 const (
 	timeShift    = 22            // 时间戳左移22位(10位机器ID + 12位序列号)，可使用约69年，2^41秒
@@ -25,10 +30,25 @@ const (
 )
 
 func NewSnowflake() *Snowflake {
-	return &Snowflake{machineID: IDGenerateMachineID()}
+	s := &Snowflake{}
+	s.machineID = s.getMachineID() // 获取机器唯一ID
+	return s
 }
 
-func (s *Snowflake) Generate() int64 {
+// getMachineID 获取机器唯一ID的示例函数
+func (s *Snowflake) getMachineID() int64 {
+	// 生产环境中应使用稳定的ID分配方案
+	//if id := os.Getenv("MACHINE_ID"); id != "" {
+	//	i, _ := strconv.Atoi(id)
+	//	return int64(i % 1024)
+	//}
+
+	// 默认使用随机分配 (开发环境)
+	u := uuid.New()
+	return int64(u.ID() % 1024)
+}
+
+func (s *Snowflake) Generate() ID {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
@@ -54,34 +74,21 @@ func (s *Snowflake) Generate() int64 {
 	s.lastStamp = now
 
 	// 生成ID: (时间差 << 时间位移) | (机器ID << 机器位移) | 序列号
-	return ((now - epoch) << timeShift) | (s.machineID << machineShift) | s.sequence
+	return ID(((now - epoch) << timeShift) | (s.machineID << machineShift) | s.sequence)
 }
 
-// IDExtractTimestamp 从ID中提取时间戳
-func IDExtractTimestamp(id int64) time.Time {
-	ms := (id >> timeShift) + epoch
+// ExtractTimestamp 从ID中提取时间戳
+func (id ID) ExtractTimestamp() time.Time {
+	ms := (int64(id) >> timeShift) + epoch
 	return time.Unix(ms/1000, (ms%1000)*1e6)
 }
 
-// IDExtractMachineID 从ID中提取机器ID
-func IDExtractMachineID(id int64) int64 {
-	return (id >> machineShift) & 0x3FF // 10位机器ID
+// ExtractMachineID 从ID中提取机器ID
+func (id ID) ExtractMachineID() int64 {
+	return (int64(id) >> machineShift) & 0x3FF // 10位机器ID
 }
 
-// IDExtractSequence 从ID中提取序列号
-func IDExtractSequence(id int64) int64 {
-	return id & 0xFFF // 12位序列号
-}
-
-// IDGenerateMachineID 获取机器唯一ID的示例函数
-func IDGenerateMachineID() int64 {
-	// 生产环境中应使用稳定的ID分配方案
-	//if id := os.Getenv("MACHINE_ID"); id != "" {
-	//	i, _ := strconv.Atoi(id)
-	//	return int64(i % 1024)
-	//}
-
-	// 默认使用随机分配 (开发环境)
-	u := uuid.New()
-	return int64(u.ID() % 1024)
+// ExtractSequence 从ID中提取序列号
+func (id ID) ExtractSequence() int64 {
+	return int64(id) & 0xFFF // 12位序列号
 }
