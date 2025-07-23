@@ -1,4 +1,4 @@
-package entity
+package model
 
 import (
 	"katydid-mp-account/pkg/field"
@@ -7,8 +7,8 @@ import (
 )
 
 type (
-	// Entity 实体基类
-	Entity struct {
+	// Base 实体基类
+	Base struct {
 		//gorm.Model
 		ID int64 `json:"id" gorm:"primarykey;comment:主键"`
 
@@ -21,14 +21,14 @@ type (
 		// index
 		// required
 
-		Extra field.KSMap `json:"extra" gorm:"serializer:json;comment:额外信息"` // (!索引+!必需)
+		Extra field.KMap `json:"extra" gorm:"serializer:json;comment:额外信息"` // (!索引+!必需)
 	}
 )
 
-func NewEntity(id int64) *Entity {
-	return &Entity{
+func NewBase(id int64) *Base {
+	return &Base{
 		ID:    id,
-		Extra: make(field.KSMap),
+		Extra: make(field.KMap),
 	}
 }
 
@@ -36,16 +36,16 @@ const (
 	extraKeyAdminNote = "adminNote" // 管理员备注
 )
 
-func (e *Entity) GetAdminNote() (string, bool) {
-	return e.Extra.GetString(extraKeyAdminNote)
+func (b *Base) GetAdminNote() (string, bool) {
+	return b.Extra.GetString(extraKeyAdminNote)
 }
 
-func (e *Entity) SetAdminNote(adminNote *string) {
-	e.Extra.SetString(extraKeyAdminNote, adminNote)
+func (b *Base) SetAdminNote(adminNote *string) {
+	b.Extra.SetString(extraKeyAdminNote, adminNote)
 }
 
 // ValidFieldRules 字段验证规则
-func (e *Entity) ValidFieldRules() valid.FieldValidRules {
+func (b *Base) ValidFieldRules() valid.FieldValidRules {
 	return valid.FieldValidRules{
 		valid.SceneAll:    valid.FieldValidRule{},
 		valid.SceneBind:   valid.FieldValidRule{},
@@ -58,9 +58,9 @@ func (e *Entity) ValidFieldRules() valid.FieldValidRules {
 	}
 }
 
-// ValidExtraRules KSMap验证规则
-func (e *Entity) ValidExtraRules() (field.KSMap, valid.ExtraValidRules) {
-	return e.Extra, valid.ExtraValidRules{
+// ValidExtraRules KMap/Extra验证规则
+func (b *Base) ValidExtraRules() (field.KMap, valid.ExtraValidRules) {
+	return b.Extra, valid.ExtraValidRules{
 		valid.SceneAll: map[valid.Tag]valid.ExtraValidRuleInfo{
 			// 管理员备注 (0-10000)
 			extraKeyAdminNote: {
@@ -77,17 +77,17 @@ func (e *Entity) ValidExtraRules() (field.KSMap, valid.ExtraValidRules) {
 }
 
 // ValidStructRules 结构体验证规则
-func (e *Entity) ValidStructRules(scene valid.Scene, fn valid.FuncReportError) {
+func (b *Base) ValidStructRules(scene valid.Scene, fn valid.FuncReportError) {
 	switch scene {
 	case valid.SceneAll:
-		if e.CreateAt.Before(e.UpdateAt) {
-			fn(e.CreateAt, "CreateAt", valid.TagCheck, "")
+		if b.CreateAt.Before(b.UpdateAt) {
+			fn(b.CreateAt, "CreateAt", valid.TagCheck, "")
 		}
 	}
 }
 
 // ValidLocalizeRules 本地化验证规则
-func (e *Entity) ValidLocalizeRules() valid.LocalizeValidRules {
+func (b *Base) ValidLocalizeRules() valid.LocalizeValidRules {
 	return valid.LocalizeValidRules{
 		valid.SceneAll: valid.LocalizeValidRule{
 			Rule1: map[valid.Tag]map[valid.FieldName]valid.LocalizeValidRuleParam{

@@ -4,16 +4,16 @@ import (
 	"math"
 )
 
-// KSMap 扩展 map[string]any 类型
-type KSMap map[string]any
+// KMap 扩展 map[string]any 类型
+type KMap map[string]any
 
 // Set 设置任意类型值
-func (m KSMap) Set(key string, value any) {
+func (m KMap) Set(key string, value any) {
 	m[key] = value
 }
 
 // SetPtr 设置指针型值
-func (m KSMap) SetPtr(key string, value *any) {
+func (m KMap) SetPtr(key string, value *any) {
 	if value == nil {
 		m.Delete(key)
 		return
@@ -22,18 +22,18 @@ func (m KSMap) SetPtr(key string, value *any) {
 }
 
 // Delete 删除指定key
-func (m KSMap) Delete(key string) {
+func (m KMap) Delete(key string) {
 	delete(m, key)
 }
 
 // Get 获取任意类型值，需要自己做类型断言
-func (m KSMap) Get(key string) (any, bool) {
+func (m KMap) Get(key string) (any, bool) {
 	v, ok := m[key]
 	return v, ok
 }
 
 // SetSlice 设置[]any类型值
-func (m KSMap) SetSlice(key string, value *[]any) {
+func (m KMap) SetSlice(key string, value *[]any) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -42,7 +42,7 @@ func (m KSMap) SetSlice(key string, value *[]any) {
 }
 
 // GetSlice 获取[]any类型值
-func (m KSMap) GetSlice(key string) ([]any, bool) {
+func (m KMap) GetSlice(key string) ([]any, bool) {
 	if v, ok := m[key]; ok {
 		if slice, ok := v.([]any); ok {
 			return slice, true
@@ -52,7 +52,7 @@ func (m KSMap) GetSlice(key string) ([]any, bool) {
 }
 
 // SetInt 设置int类型值
-func (m KSMap) SetInt(key string, value *int) {
+func (m KMap) SetInt(key string, value *int) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -61,7 +61,7 @@ func (m KSMap) SetInt(key string, value *int) {
 }
 
 // GetInt 获取int类型值
-func (m KSMap) GetInt(key string) (int, bool) {
+func (m KMap) GetInt(key string) (int, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case int:
@@ -106,7 +106,7 @@ func (m KSMap) GetInt(key string) (int, bool) {
 }
 
 // SetIntSlice 设置[]int类型值
-func (m KSMap) SetIntSlice(key string, value *[]int) {
+func (m KMap) SetIntSlice(key string, value *[]int) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -115,7 +115,7 @@ func (m KSMap) SetIntSlice(key string, value *[]int) {
 }
 
 // GetIntSlice 获取[]int类型值
-func (m KSMap) GetIntSlice(key string) ([]int, bool) {
+func (m KMap) GetIntSlice(key string) ([]int, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []int:
@@ -136,7 +136,7 @@ func (m KSMap) GetIntSlice(key string) ([]int, bool) {
 }
 
 // SetInt8 设置int8类型值
-func (m KSMap) SetInt8(key string, value *int8) {
+func (m KMap) SetInt8(key string, value *int8) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -145,7 +145,7 @@ func (m KSMap) SetInt8(key string, value *int8) {
 }
 
 // GetInt8 获取int8类型值
-func (m KSMap) GetInt8(key string) (int8, bool) {
+func (m KMap) GetInt8(key string) (int8, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case int8:
@@ -200,7 +200,7 @@ func (m KSMap) GetInt8(key string) (int8, bool) {
 }
 
 // SetInt8Slice 设置[]int8类型值
-func (m KSMap) SetInt8Slice(key string, value *[]int8) {
+func (m KMap) SetInt8Slice(key string, value *[]int8) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -209,7 +209,7 @@ func (m KSMap) SetInt8Slice(key string, value *[]int8) {
 }
 
 // GetInt8Slice 获取[]int8类型值
-func (m KSMap) GetInt8Slice(key string) ([]int8, bool) {
+func (m KMap) GetInt8Slice(key string) ([]int8, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []int8:
@@ -230,7 +230,7 @@ func (m KSMap) GetInt8Slice(key string) ([]int8, bool) {
 }
 
 // SetInt16 设置int16类型值
-func (m KSMap) SetInt16(key string, value *int16) {
+func (m KMap) SetInt16(key string, value *int16) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -239,7 +239,7 @@ func (m KSMap) SetInt16(key string, value *int16) {
 }
 
 // GetInt16 获取int16类型值
-func (m KSMap) GetInt16(key string) (int16, bool) {
+func (m KMap) GetInt16(key string) (int16, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case int16:
@@ -290,7 +290,7 @@ func (m KSMap) GetInt16(key string) (int16, bool) {
 }
 
 // SetInt16Slice 设置[]int16类型值
-func (m KSMap) SetInt16Slice(key string, value *[]int16) {
+func (m KMap) SetInt16Slice(key string, value *[]int16) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -299,7 +299,7 @@ func (m KSMap) SetInt16Slice(key string, value *[]int16) {
 }
 
 // GetInt16Slice 获取[]int16类型值
-func (m KSMap) GetInt16Slice(key string) ([]int16, bool) {
+func (m KMap) GetInt16Slice(key string) ([]int16, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []int16:
@@ -320,7 +320,7 @@ func (m KSMap) GetInt16Slice(key string) ([]int16, bool) {
 }
 
 // SetInt64 设置int64类型值
-func (m KSMap) SetInt64(key string, value *int64) {
+func (m KMap) SetInt64(key string, value *int64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -329,7 +329,7 @@ func (m KSMap) SetInt64(key string, value *int64) {
 }
 
 // GetInt64 获取int64类型值
-func (m KSMap) GetInt64(key string) (int64, bool) {
+func (m KMap) GetInt64(key string) (int64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case int64:
@@ -368,7 +368,7 @@ func (m KSMap) GetInt64(key string) (int64, bool) {
 }
 
 // SetInt64Slice 设置[]int64类型值
-func (m KSMap) SetInt64Slice(key string, value *[]int64) {
+func (m KMap) SetInt64Slice(key string, value *[]int64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -377,7 +377,7 @@ func (m KSMap) SetInt64Slice(key string, value *[]int64) {
 }
 
 // GetInt64Slice 获取[]int64类型值
-func (m KSMap) GetInt64Slice(key string) ([]int64, bool) {
+func (m KMap) GetInt64Slice(key string) ([]int64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []int64:
@@ -398,7 +398,7 @@ func (m KSMap) GetInt64Slice(key string) ([]int64, bool) {
 }
 
 // SetUint 设置uint类型值
-func (m KSMap) SetUint(key string, value *uint) {
+func (m KMap) SetUint(key string, value *uint) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -407,7 +407,7 @@ func (m KSMap) SetUint(key string, value *uint) {
 }
 
 // GetUint 获取uint类型值
-func (m KSMap) GetUint(key string) (uint, bool) {
+func (m KMap) GetUint(key string) (uint, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case uint:
@@ -458,7 +458,7 @@ func (m KSMap) GetUint(key string) (uint, bool) {
 }
 
 // SetUintSlice 设置[]uint类型值
-func (m KSMap) SetUintSlice(key string, value *[]uint) {
+func (m KMap) SetUintSlice(key string, value *[]uint) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -467,7 +467,7 @@ func (m KSMap) SetUintSlice(key string, value *[]uint) {
 }
 
 // GetUintSlice 获取[]uint类型值
-func (m KSMap) GetUintSlice(key string) ([]uint, bool) {
+func (m KMap) GetUintSlice(key string) ([]uint, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []uint:
@@ -488,7 +488,7 @@ func (m KSMap) GetUintSlice(key string) ([]uint, bool) {
 }
 
 // SetUint8 设置uint8类型值
-func (m KSMap) SetUint8(key string, value *uint8) {
+func (m KMap) SetUint8(key string, value *uint8) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -497,7 +497,7 @@ func (m KSMap) SetUint8(key string, value *uint8) {
 }
 
 // GetUint8 获取uint8类型值
-func (m KSMap) GetUint8(key string) (uint8, bool) {
+func (m KMap) GetUint8(key string) (uint8, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case uint8:
@@ -552,7 +552,7 @@ func (m KSMap) GetUint8(key string) (uint8, bool) {
 }
 
 // SetUint8Slice 设置[]uint8类型值
-func (m KSMap) SetUint8Slice(key string, value *[]uint8) {
+func (m KMap) SetUint8Slice(key string, value *[]uint8) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -561,7 +561,7 @@ func (m KSMap) SetUint8Slice(key string, value *[]uint8) {
 }
 
 // GetUint8Slice 获取[]uint8类型值
-func (m KSMap) GetUint8Slice(key string) ([]uint8, bool) {
+func (m KMap) GetUint8Slice(key string) ([]uint8, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []uint8:
@@ -582,7 +582,7 @@ func (m KSMap) GetUint8Slice(key string) ([]uint8, bool) {
 }
 
 // SetUint16 设置uint16类型值
-func (m KSMap) SetUint16(key string, value *uint16) {
+func (m KMap) SetUint16(key string, value *uint16) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -591,7 +591,7 @@ func (m KSMap) SetUint16(key string, value *uint16) {
 }
 
 // GetUint16 获取uint16类型值
-func (m KSMap) GetUint16(key string) (uint16, bool) {
+func (m KMap) GetUint16(key string) (uint16, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case uint16:
@@ -644,7 +644,7 @@ func (m KSMap) GetUint16(key string) (uint16, bool) {
 }
 
 // SetUint16Slice 设置[]uint16类型值
-func (m KSMap) SetUint16Slice(key string, value *[]uint16) {
+func (m KMap) SetUint16Slice(key string, value *[]uint16) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -653,7 +653,7 @@ func (m KSMap) SetUint16Slice(key string, value *[]uint16) {
 }
 
 // GetUint16Slice 获取[]uint16类型值
-func (m KSMap) GetUint16Slice(key string) ([]uint16, bool) {
+func (m KMap) GetUint16Slice(key string) ([]uint16, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []uint16:
@@ -674,7 +674,7 @@ func (m KSMap) GetUint16Slice(key string) ([]uint16, bool) {
 }
 
 // SetUint64 设置uint64类型值
-func (m KSMap) SetUint64(key string, value *uint64) {
+func (m KMap) SetUint64(key string, value *uint64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -683,7 +683,7 @@ func (m KSMap) SetUint64(key string, value *uint64) {
 }
 
 // GetUint64 获取uint64类型值
-func (m KSMap) GetUint64(key string) (uint64, bool) {
+func (m KMap) GetUint64(key string) (uint64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case uint64:
@@ -730,7 +730,7 @@ func (m KSMap) GetUint64(key string) (uint64, bool) {
 }
 
 // SetUint64Slice 设置[]uint64类型值
-func (m KSMap) SetUint64Slice(key string, value *[]uint64) {
+func (m KMap) SetUint64Slice(key string, value *[]uint64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -739,7 +739,7 @@ func (m KSMap) SetUint64Slice(key string, value *[]uint64) {
 }
 
 // GetUint64Slice 获取[]uint64类型值
-func (m KSMap) GetUint64Slice(key string) ([]uint64, bool) {
+func (m KMap) GetUint64Slice(key string) ([]uint64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []uint64:
@@ -760,7 +760,7 @@ func (m KSMap) GetUint64Slice(key string) ([]uint64, bool) {
 }
 
 // SetFloat32 设置float32类型值
-func (m KSMap) SetFloat32(key string, value *float32) {
+func (m KMap) SetFloat32(key string, value *float32) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -769,7 +769,7 @@ func (m KSMap) SetFloat32(key string, value *float32) {
 }
 
 // GetFloat32 获取float32类型值
-func (m KSMap) GetFloat32(key string) (float32, bool) {
+func (m KMap) GetFloat32(key string) (float32, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case float32:
@@ -808,7 +808,7 @@ func (m KSMap) GetFloat32(key string) (float32, bool) {
 }
 
 // SetFloat32Slice 设置[]float32类型值
-func (m KSMap) SetFloat32Slice(key string, value *[]float32) {
+func (m KMap) SetFloat32Slice(key string, value *[]float32) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -817,7 +817,7 @@ func (m KSMap) SetFloat32Slice(key string, value *[]float32) {
 }
 
 // GetFloat32Slice 获取[]float32类型值
-func (m KSMap) GetFloat32Slice(key string) ([]float32, bool) {
+func (m KMap) GetFloat32Slice(key string) ([]float32, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []float32:
@@ -838,7 +838,7 @@ func (m KSMap) GetFloat32Slice(key string) ([]float32, bool) {
 }
 
 // SetFloat64 设置float64类型值
-func (m KSMap) SetFloat64(key string, value *float64) {
+func (m KMap) SetFloat64(key string, value *float64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -847,7 +847,7 @@ func (m KSMap) SetFloat64(key string, value *float64) {
 }
 
 // GetFloat64 获取float64类型值
-func (m KSMap) GetFloat64(key string) (float64, bool) {
+func (m KMap) GetFloat64(key string) (float64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case float64:
@@ -882,7 +882,7 @@ func (m KSMap) GetFloat64(key string) (float64, bool) {
 }
 
 // SetFloat64Slice 设置[]float64类型值
-func (m KSMap) SetFloat64Slice(key string, value *[]float64) {
+func (m KMap) SetFloat64Slice(key string, value *[]float64) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -891,7 +891,7 @@ func (m KSMap) SetFloat64Slice(key string, value *[]float64) {
 }
 
 // GetFloat64Slice 获取[]float64类型值
-func (m KSMap) GetFloat64Slice(key string) ([]float64, bool) {
+func (m KMap) GetFloat64Slice(key string) ([]float64, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []float64:
@@ -912,7 +912,7 @@ func (m KSMap) GetFloat64Slice(key string) ([]float64, bool) {
 }
 
 // SetBool 设置bool类型值
-func (m KSMap) SetBool(key string, value *bool) {
+func (m KMap) SetBool(key string, value *bool) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -921,7 +921,7 @@ func (m KSMap) SetBool(key string, value *bool) {
 }
 
 // GetBool 获取bool类型值
-func (m KSMap) GetBool(key string) (bool, bool) {
+func (m KMap) GetBool(key string) (bool, bool) {
 	if v, ok := m[key]; ok {
 		if b, ok := v.(bool); ok {
 			return b, true
@@ -931,7 +931,7 @@ func (m KSMap) GetBool(key string) (bool, bool) {
 }
 
 // SetBoolSlice 设置[]bool类型值
-func (m KSMap) SetBoolSlice(key string, value *[]bool) {
+func (m KMap) SetBoolSlice(key string, value *[]bool) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -940,7 +940,7 @@ func (m KSMap) SetBoolSlice(key string, value *[]bool) {
 }
 
 // GetBoolSlice 获取[]bool类型值
-func (m KSMap) GetBoolSlice(key string) ([]bool, bool) {
+func (m KMap) GetBoolSlice(key string) ([]bool, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []bool:
@@ -961,7 +961,7 @@ func (m KSMap) GetBoolSlice(key string) ([]bool, bool) {
 }
 
 // SetString 设置string类型值
-func (m KSMap) SetString(key string, value *string) {
+func (m KMap) SetString(key string, value *string) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -970,7 +970,7 @@ func (m KSMap) SetString(key string, value *string) {
 }
 
 // GetString 获取string类型值
-func (m KSMap) GetString(key string) (string, bool) {
+func (m KMap) GetString(key string) (string, bool) {
 	if v, ok := m[key]; ok {
 		if str, ok := v.(string); ok {
 			return str, true
@@ -980,7 +980,7 @@ func (m KSMap) GetString(key string) (string, bool) {
 }
 
 // SetStringSlice 设置[]string类型值
-func (m KSMap) SetStringSlice(key string, value *[]string) {
+func (m KMap) SetStringSlice(key string, value *[]string) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -989,7 +989,7 @@ func (m KSMap) SetStringSlice(key string, value *[]string) {
 }
 
 // GetStringSlice 获取[]string类型值
-func (m KSMap) GetStringSlice(key string) ([]string, bool) {
+func (m KMap) GetStringSlice(key string) ([]string, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []string:
@@ -1010,7 +1010,7 @@ func (m KSMap) GetStringSlice(key string) ([]string, bool) {
 }
 
 // SetMap 设置Maps类型值
-func (m KSMap) SetMap(key string, value *KSMap) {
+func (m KMap) SetMap(key string, value *KMap) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -1019,10 +1019,10 @@ func (m KSMap) SetMap(key string, value *KSMap) {
 }
 
 // GetMap 获取Maps类型值
-func (m KSMap) GetMap(key string) (KSMap, bool) {
+func (m KMap) GetMap(key string) (KMap, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
-		case KSMap:
+		case KMap:
 			return val, true
 		case map[string]any:
 			return val, true
@@ -1032,7 +1032,7 @@ func (m KSMap) GetMap(key string) (KSMap, bool) {
 }
 
 // SetMapSlice 设置[]Maps类型值
-func (m KSMap) SetMapSlice(key string, value *[]KSMap) {
+func (m KMap) SetMapSlice(key string, value *[]KMap) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -1041,28 +1041,28 @@ func (m KSMap) SetMapSlice(key string, value *[]KSMap) {
 }
 
 // GetMapSlice 获取[]Maps类型值
-func (m KSMap) GetMapSlice(key string) ([]KSMap, bool) {
+func (m KMap) GetMapSlice(key string) ([]KMap, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
-		case []KSMap:
+		case []KMap:
 			return val, true
 		case []any:
-			ksMaps := make([]KSMap, 0, len(val))
+			kMaps := make([]KMap, 0, len(val))
 			for _, item := range val {
-				if maps, ok := item.(KSMap); ok {
-					ksMaps = append(ksMaps, maps)
+				if maps, ok := item.(KMap); ok {
+					kMaps = append(kMaps, maps)
 				} else {
 					return nil, false
 				}
 			}
-			return ksMaps, true
+			return kMaps, true
 		}
 	}
 	return nil, false
 }
 
 // SetBytes 设置[]byte类型值
-func (m KSMap) SetBytes(key string, value *[]byte) {
+func (m KMap) SetBytes(key string, value *[]byte) {
 	if value == nil {
 		delete(m, key)
 		return
@@ -1071,7 +1071,7 @@ func (m KSMap) SetBytes(key string, value *[]byte) {
 }
 
 // GetBytes 获取[]byte类型值
-func (m KSMap) GetBytes(key string) ([]byte, bool) {
+func (m KMap) GetBytes(key string) ([]byte, bool) {
 	if v, ok := m[key]; ok {
 		switch val := v.(type) {
 		case []byte:
@@ -1084,18 +1084,18 @@ func (m KSMap) GetBytes(key string) ([]byte, bool) {
 }
 
 // Has 判断是否存在指定key
-func (m KSMap) Has(key string) bool {
+func (m KMap) Has(key string) bool {
 	_, ok := m[key]
 	return ok
 }
 
 // Len 获取map长度
-func (m KSMap) Len() int {
+func (m KMap) Len() int {
 	return len(m)
 }
 
 // Keys 获取所有key
-func (m KSMap) Keys() []string {
+func (m KMap) Keys() []string {
 	keys := make([]string, 0, len(m))
 	for k := range m {
 		keys = append(keys, k)
