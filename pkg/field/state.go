@@ -1,4 +1,4 @@
-package entity
+package field
 
 // State 状态
 type State int64

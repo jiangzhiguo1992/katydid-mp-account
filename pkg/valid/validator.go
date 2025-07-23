@@ -31,8 +31,8 @@ const (
 	SceneInsert Scene = 11
 	SceneUpdate Scene = 12
 	SceneQuery  Scene = 13
-	SceneReturn Scene = 20 // = response
-	SceneCustom Scene = 1000
+	SceneReturn Scene = 20   // = response
+	SceneCustom Scene = 1000 // 自定义 custom+n
 )
 
 // Tag 字段标签
