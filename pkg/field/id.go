@@ -10,6 +10,14 @@ import (
 // ID 唯一标识
 type ID int64
 
+func NewID(id int64) ID {
+	return ID(id)
+}
+
+func (id ID) Value() int64 {
+	return int64(id)
+}
+
 // ExtractTimestamp 从ID中提取时间戳
 func (id ID) ExtractTimestamp() time.Time {
 	ms := (int64(id) >> timeShift) + epoch

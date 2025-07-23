@@ -10,12 +10,13 @@ type (
 	// Base 实体基类
 	Base struct {
 		//gorm.Model
-		ID int64 `json:"id" gorm:"primarykey;comment:主键"`
+		ID field.ID `json:"id" gorm:"primarykey;comment:主键"`
 
-		State    field.State `json:"state" gorm:"default:0;comment:状态"`
-		CreateAt time.Time   `json:"createAt" gorm:"autoCreateTime:milli;comment:创建时间"`
-		UpdateAt time.Time   `json:"updateAt" gorm:"autoUpdateTime:milli;comment:更新时间"`
-		DeleteAt *time.Time  `json:"deleteAt;comment:删除时间"` // 删除人可以在 Extra 中设置
+		CreateAt time.Time  `json:"createAt" gorm:"autoCreateTime:milli;comment:创建时间"`
+		UpdateAt time.Time  `json:"updateAt" gorm:"autoUpdateTime:milli;comment:更新时间"`
+		DeleteAt *time.Time `json:"deleteAt;comment:删除时间"` // 删除人可以在 Extra 中设置
+
+		State field.State `json:"state" gorm:"default:0;comment:状态"`
 
 		// id
 		// index
@@ -25,9 +26,11 @@ type (
 	}
 )
 
-func NewBase(id int64) *Base {
-	return &Base{
-		ID:    id,
+func NewBase(id field.ID) Base {
+	return Base{
+		ID: id,
+		// times
+		State: field.StateNone,
 		Extra: make(field.KMap),
 	}
 }
