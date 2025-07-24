@@ -25,13 +25,15 @@ var (
 type Scene uint16
 
 const (
-	SceneAll    Scene = 0
+	SceneAll Scene = 0
+
 	SceneBind   Scene = 1
 	SceneSave   Scene = 10 // = insert + update
 	SceneInsert Scene = 11
 	SceneUpdate Scene = 12
 	SceneQuery  Scene = 13
-	SceneReturn Scene = 20   // = response
+	SceneReturn Scene = 20 // = response
+
 	SceneCustom Scene = 1000 // 自定义 custom+n
 )
 
@@ -48,13 +50,23 @@ const (
 // FieldName 字段名称
 type FieldName string
 
+// 字段验证
 type (
-	// FieldValidRules 定义字段验证规则
+	IFieldValidator interface {
+		ValidFieldRules() FieldValidRules
+	}
+
 	FieldValidRules  = map[Scene]FieldValidRule
 	FieldValidRule   = map[Tag]FieldValidRuleFn
 	FieldValidRuleFn = func(value reflect.Value, param string) bool
+)
 
-	// ExtraValidRules 定义额外字段验证规则
+// 额外(Extra)字段验证
+type (
+	IExtraValidator interface {
+		ValidExtraRules() (map[string]any, ExtraValidRules)
+	}
+
 	ExtraValidRules    = map[Scene]ExtraValidRule
 	ExtraValidRule     = map[Tag]ExtraValidRuleInfo
 	ExtraValidRuleInfo struct {
@@ -62,45 +74,38 @@ type (
 		Param   string
 		ValidFn func(value any) bool
 	}
+)
+
+// 结构体(多字段关联)验证
+type (
+	IStructValidator interface {
+		ValidStructRules(scene Scene, fn FuncReportError)
+	}
 
 	// FuncReportError validator.StructLevel.FuncReportError
 	FuncReportError = func(field any, fieldName FieldName, tag Tag, param string)
+)
 
-	// LocalizeValidRules 定义本地化的规则映射
+// 本地化
+type (
+	ILocalizeValidator interface {
+		ValidLocalizeRules() LocalizeValidRules
+	}
+
 	LocalizeValidRules = map[Scene]LocalizeValidRule
 	LocalizeValidRule  struct {
 		Rule1 map[Tag]map[FieldName]LocalizeValidRuleParam
 		Rule2 map[Tag]LocalizeValidRuleParam
 	}
 	LocalizeValidRuleParam = [3]any // {msg, param, template([]any)}
-
-	// MsgErr 定义错误信息结构体
-	MsgErr struct {
-		Err    error
-		Msg    string
-		Params []any
-	}
-
-	// IFieldValidator 定义字段验证接口
-	IFieldValidator interface {
-		ValidFieldRules() FieldValidRules
-	}
-
-	// IExtraValidator 定义额外字段验证接口
-	IExtraValidator interface {
-		ValidExtraRules() (map[string]any, ExtraValidRules)
-	}
-
-	// IStructValidator 定义结构验证接口
-	IStructValidator interface {
-		ValidStructRules(scene Scene, fn FuncReportError)
-	}
-
-	// ILocalizeValidator 定义本地化错误规则接口
-	ILocalizeValidator interface {
-		ValidLocalizeRules() LocalizeValidRules
-	}
 )
+
+// MsgErr 定义错误信息结构体
+type MsgErr struct {
+	Err    error
+	Msg    string
+	Params []any
+}
 
 func Get() *Validator {
 	vOnce.Do(func() {

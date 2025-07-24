@@ -10,30 +10,26 @@ func (s State) value() int64 {
 	return int64(s)
 }
 
-func (s State) Set(states int64) {
-	s = State(states)
+func (s State) Add(states State) {
+	s |= states
 }
 
-func (s State) Add(states int64) {
-	s |= State(states)
+func (s State) Remove(states State) {
+	s &= ^states
 }
 
-func (s State) Remove(states int64) {
-	s &= ^State(states)
+func (s State) Clear(ignores State) {
+	s &= ignores
 }
 
-func (s State) Clear(ignores int64) {
-	s &= State(ignores)
+func (s State) HasAny(states State) bool {
+	return s&states != 0
 }
 
-func (s State) HasAny(states int64) bool {
-	return s&State(states) != 0
+func (s State) HasAll(states State) bool {
+	return (s & states) == states
 }
 
-func (s State) HasAll(states int64) bool {
-	return s&State(states) == State(states)
-}
-
-func (s State) Equal(states int64) bool {
-	return s == State(states)
+func (s State) Equal(states State) bool {
+	return s == states
 }
