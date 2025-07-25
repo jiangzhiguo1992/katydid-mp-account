@@ -1,11 +1,13 @@
 package field
 
 const (
-	StateWhite  State = 1 << 1 // 白名单
-	StateEnable State = 1 << 0 // 启用
-	StateInit   State = 0
-	StateBlack  State = -1 << 0 // 黑名单
-	StateDel    State = -1 << 1 // 删除
+	StateUserCustom       = StateEnable // 用户自定义
+	StateEnable     State = 1 << 1      // 停用/启用
+	StateDel        State = 1 << 0      // 删除/存在
+	StateInit       State = 0           // 初始
+	StateInvisible  State = -1 << 0     // 可见/屏蔽(对外)
+	StateBlack      State = -1 << 1     // 白名单/黑名单(登录等权限)
+	StateSysCustom        = StateBlack  // 系统自定义
 )
 
 // State 状态
