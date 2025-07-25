@@ -9,17 +9,17 @@ import (
 	"sync"
 )
 
+var (
+	valid *Validator
+	vOnce sync.Once
+)
+
 // Validator 验证器
 type Validator struct {
 	validate *validator.Validate
 	regTypes *sync.Map // 验证注册类型缓存
 	regLocs  *sync.Map // 本地化文本缓存
 }
-
-var (
-	valid *Validator
-	vOnce sync.Once
-)
 
 // Scene 验证场景
 type Scene uint16
