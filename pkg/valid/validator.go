@@ -22,19 +22,19 @@ type Validator struct {
 }
 
 // Scene 验证场景
-type Scene uint16
+type Scene uint64
 
 const (
-	SceneAll Scene = 0
+	SceneAll Scene = 0 // 所有的场景
 
-	SceneBind   Scene = 1
-	SceneSave   Scene = 10 // = insert + update
-	SceneInsert Scene = 11
-	SceneUpdate Scene = 12
-	SceneQuery  Scene = 13
-	SceneReturn Scene = 20 // = response
+	SceneBind Scene = 1 << 0 // 请求数据绑定
+	SceneAdd  Scene = 1 << 1 // 添加/新增
+	SceneDel  Scene = 1 << 2 // 删除/移除
+	SceneUpd  Scene = 1 << 3 // 更新/修改
+	SceneGet  Scene = 1 << 4 // 获取/查询
+	SceneRes  Scene = 1 << 5 // 返回/响应
 
-	SceneCustom Scene = 1000 // 自定义 custom+n
+	SceneCustom Scene = SceneRes // 自定义 custom << ?
 )
 
 // Tag 字段标签
@@ -205,19 +205,24 @@ func (v *Validator) validFields(obj any, scene Scene) error {
 	if sceneRules == nil {
 		return nil
 	}
-	tagRules := make(map[Tag]FieldValidRuleFn)
 
-	// 注册全局验证规则
-	if tRules := sceneRules[SceneAll]; tRules != nil {
-		for tag, rule := range tRules {
-			tagRules[tag] = rule
+	// 筛选出当前场景的验证规则
+	scenes := make([]Scene, 0)
+	for key := range sceneRules {
+		if key == SceneAll {
+			scenes = append(scenes, SceneAll) // 添加全局场景
+		} else if (key & scene) == scene {
+			scenes = append(scenes, key) // 添加当前场景(必须是全部包含)
 		}
 	}
 
-	// 注册当前场景验证规则
-	if tRules := sceneRules[scene]; tRules != nil {
-		for tag, rule := range tRules {
-			tagRules[tag] = rule
+	// 遍历所有场景的验证规则
+	tagRules := make(map[Tag]FieldValidRuleFn)
+	for _, s := range scenes {
+		if tRules := sceneRules[s]; tRules != nil {
+			for tag, rule := range tRules {
+				tagRules[tag] = rule // 合并验证规则
+			}
 		}
 	}
 
@@ -247,19 +252,24 @@ func (v *Validator) validExtra(obj any, sl validator.StructLevel, scene Scene) {
 	if (extra == nil) || (sceneRules == nil) {
 		return
 	}
-	tagRules := make(map[Tag]ExtraValidRuleInfo)
 
-	// 注册全局验证规则
-	if tRules := sceneRules[SceneAll]; tRules != nil {
-		for tag, rule := range tRules {
-			tagRules[tag] = rule
+	// 筛选出当前场景的验证规则
+	scenes := make([]Scene, 0)
+	for key := range sceneRules {
+		if key == SceneAll {
+			scenes = append(scenes, SceneAll) // 添加全局场景
+		} else if (key & scene) == scene {
+			scenes = append(scenes, key) // 添加当前场景(必须是全部包含)
 		}
 	}
 
-	// 注册当前场景验证规则
-	if tRules := sceneRules[scene]; tRules != nil {
-		for tag, rule := range tRules {
-			tagRules[tag] = rule
+	// 遍历所有场景的验证规则
+	tagRules := make(map[Tag]ExtraValidRuleInfo)
+	for _, s := range scenes {
+		if tRules := sceneRules[s]; tRules != nil {
+			for tag, rule := range tRules {
+				tagRules[tag] = rule // 合并验证规则
+			}
 		}
 	}
 
@@ -278,9 +288,15 @@ func (v *Validator) validExtra(obj any, sl validator.StructLevel, scene Scene) {
 
 // validStruct 注册结构体验证规则
 func (v *Validator) validStruct(obj any, sl validator.StructLevel, scene Scene) {
+	// 筛选出当前场景的验证规则
+	scenes := make([]Scene, 0)
+	scenes = append(scenes, SceneAll) // 添加全局场景
+	scenes = append(scenes, scene)    // 添加当前场景(实现类判断)
+
 	// 处理嵌入字段的验证规则(全局+当前)
-	_ = v.processEmbeddedValidations(obj, SceneAll, 3, sl)
-	_ = v.processEmbeddedValidations(obj, scene, 3, sl)
+	for _, s := range scenes {
+		_ = v.processEmbeddedValidations(obj, s, 3, sl)
+	}
 
 	sv, ok := obj.(IStructValidator)
 	if !ok {
@@ -288,12 +304,11 @@ func (v *Validator) validStruct(obj any, sl validator.StructLevel, scene Scene) 
 	}
 
 	// 获取验证规则(全局+当前)
-	sv.ValidStructRules(SceneAll, func(field any, fieldName FieldName, tag Tag, param string) {
-		sl.ReportError(field, string(fieldName), string(fieldName), string(tag), param)
-	})
-	sv.ValidStructRules(scene, func(field any, fieldName FieldName, tag Tag, param string) {
-		sl.ReportError(field, string(fieldName), string(fieldName), string(tag), param)
-	})
+	for _, s := range scenes {
+		sv.ValidStructRules(s, func(field any, fieldName FieldName, tag Tag, param string) {
+			sl.ReportError(field, string(fieldName), string(fieldName), string(tag), param)
+		})
+	}
 }
 
 // processEmbeddedValidations 递归注册组合类型的验证规则
@@ -415,35 +430,33 @@ func (v *Validator) validLocalize(
 			return msgErrs
 		}
 
-		// 预分配合适大小的map
+		// 筛选出当前场景的验证规则
+		scenes := make([]Scene, 0)
+		for key := range sceneRules {
+			if key == SceneAll {
+				scenes = append(scenes, SceneAll) // 添加全局场景
+			} else if (key & scene) == scene {
+				scenes = append(scenes, key) // 添加当前场景(必须是全部包含)
+			}
+		}
+
+		// 遍历所有场景的验证规则1
 		tagFieldRules := make(map[Tag]map[FieldName]LocalizeValidRuleParam)
+		for _, s := range scenes {
+			if tRules := sceneRules[s]; tRules.Rule1 != nil {
+				for tag, rule := range tRules.Rule1 {
+					tagFieldRules[tag] = rule // 合并验证规则
+				}
+			}
+		}
+
+		// 遍历所有场景的验证规则2
 		tagRules := make(map[Tag]LocalizeValidRuleParam)
-
-		// 处理全局规则 - Rule1
-		if tRules := sceneRules[SceneAll]; tRules.Rule1 != nil {
-			for tag, rule := range tRules.Rule1 {
-				tagFieldRules[tag] = rule
-			}
-		}
-
-		// 处理全局规则 - Rule2
-		if tRules := sceneRules[SceneAll]; tRules.Rule2 != nil {
-			for tag, rule := range tRules.Rule2 {
-				tagRules[tag] = rule
-			}
-		}
-
-		// 处理当前场景规则 - Rule1
-		if tRules := sceneRules[scene]; tRules.Rule1 != nil {
-			for tag, rule := range tRules.Rule1 {
-				tagFieldRules[tag] = rule
-			}
-		}
-
-		// 处理当前场景规则 - Rule2
-		if tRules := sceneRules[scene]; tRules.Rule2 != nil {
-			for tag, rule := range tRules.Rule2 {
-				tagRules[tag] = rule
+		for _, s := range scenes {
+			if tRules := sceneRules[s]; tRules.Rule2 != nil {
+				for tag, rule := range tRules.Rule2 {
+					tagRules[tag] = rule // 合并验证规则
+				}
 			}
 		}
 
